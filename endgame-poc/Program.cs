@@ -21,6 +21,9 @@ namespace endgame_poc
                         .WithHeader("Content-Type", "text/plain")
                         .WithBody("Hello world!")
                 );
+
+            Console.WriteLine("Press any key to stop server...");
+            Console.ReadLine();
         }
     }
 }
