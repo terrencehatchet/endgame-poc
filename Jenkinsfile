@@ -1,4 +1,4 @@
-ine {
+pipeline {
     agent any
     stages {
         stage ('DotNet Restore') {
