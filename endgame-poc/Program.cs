@@ -2,6 +2,7 @@
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Settings;
 
 namespace endgame_poc
 {
@@ -9,7 +10,10 @@ namespace endgame_poc
     {
         static void Main(string[] args)
         {
-            var server = FluentMockServer.Start();
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                Urls = new[] {"http://+:8080"}
+            });
 
             server
                 .Given(
