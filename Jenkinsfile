@@ -16,7 +16,8 @@ pipeline {
         stage ('DotNet Publish') {
             steps {
                 sh "dotnet publish -c Release"
-                sh "ls ./bin/Release/netcoreapp2.2/publish"
+                sh "echo ${WORKSPACE}"
+                sh "ls ./bin/Release/netcoreapp2.2/publish"                
             }
         }
         
