@@ -27,6 +27,7 @@ pipeline {
         
         stage ('Docker Publish') {
             steps {
+                sh "docker -H docker:2375 login -u jenkins -p Renegade187! registry.internallab.co.uk"
                 sh "docker -H docker:2375 push registry.internallab.co.uk/mvs/endgame-poc:${env.BUILD_NUMBER}"
             }
         }
