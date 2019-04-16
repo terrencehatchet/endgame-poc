@@ -3,7 +3,7 @@ ine {
     stages {
         stage ('DotNet Restore') {
             steps {
-                sh "dotnet restore"pipel
+                sh "dotnet restore"
             }
         }
         
