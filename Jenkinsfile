@@ -3,7 +3,8 @@ pipeline {
     stages {
         stage ('Compile') {
             steps {
-                echo "***** I still don't do ANYTHING yet ! But maybe soon*****"
+                echo "***** Building *****"
+                sh "dotnet build endgame-poc.sln --source https://api.nuget.org/v3/index.json"
             }
         }
     }
