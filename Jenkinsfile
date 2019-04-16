@@ -22,7 +22,7 @@ pipeline {
         
         stage ('Docker Build') {
             steps {
-                sh "docker -H docker:2345 build -t registry.internallab.co.uk/mvs/endgame-poc:${env.BUILD_NUMBER}"
+                sh "docker -H docker:2345 build -t registry.internallab.co.uk/mvs/endgame-poc:${env.BUILD_NUMBER} ."
             }
         }
         
