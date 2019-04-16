@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -26,8 +27,10 @@ namespace endgame_poc
                         .WithBody("Hello world!!!!!")
                 );
 
-            Console.WriteLine("Press any key to stop server...");
-            Console.ReadLine();
+            Thread.Sleep(Timeout.Infinite);
+
+            //Console.WriteLine("Press any key to stop server...");
+            //Console.ReadLine();
         }
     }
 }
