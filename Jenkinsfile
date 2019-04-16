@@ -1,10 +1,36 @@
 pipeline {
     agent any
     stages {
-        stage ('Compile') {
+        stage ('DotNet Restore') {
             steps {
-                echo "***** I still don't do ANYTHING yet ! But maybe soon*****"
+                sh "dotnet restore"
             }
         }
+        
+        stage ('DotNet Build') {
+            steps {
+                sh "dotnet build"
+            }
+        }
+        
+        stage ('DotNet Publish') {
+            steps {
+                sh "dotnet publish -c Release"
+
+            }
+        }
+        
+        stage ('Docker Build') {
+            steps {
+                sh "docker -H docker:2345 build -t registry.internallab.co.uk/mvs/endgame-poc:${env.BUILD_NUMBER}"
+            }
+        }
+        
+        stage ('Docker Publish') {
+            steps {
+                sh "docker -H docker:2345 push registry.internallab.co.uk/mvs/endgame-poc:${env.BUILD_NUMBER}"
+            }
+        }
+        
     }
 }
