@@ -13,8 +13,7 @@ pipeline {
             }
         }
         
-        try 
-        {
+
             stage ('Static code analysis (Sonarqube)')
             {
                 environment {
@@ -31,11 +30,7 @@ pipeline {
                     }
                 }
             }
-        }
-        catch (e)
-        {
-            echo "Ignore failed Sonarqube for now..."
-        }
+
         
         stage ('DotNet XUnit Tests') {
             steps {
