@@ -13,6 +13,23 @@ pipeline {
             }
         }
         
+        stage ('Static code analysis (Sonarqube)')
+        {
+            environment {
+                scannerHome = tool 'sonar-scanner'
+            }
+            
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh "${scannerHome}/bin/sonart-scanner"
+                }
+                
+                timeout(time:10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+        
         stage ('DotNet XUnit Tests') {
             steps {
                 sh "dotnet test"
