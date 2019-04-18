@@ -13,6 +13,12 @@ pipeline {
             }
         }
         
+        stage ('DotNet XUnit Tests') {
+            steps {
+                sh "dotnet test"
+            }
+        }
+        
         stage ('DotNet Publish') {
             steps {
                 sh "dotnet publish -c Release"           
