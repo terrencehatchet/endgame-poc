@@ -1,6 +1,18 @@
+#!groovy
+
+@Library('jira-shared-library@master') _
+library('common-shared@master')
+
 pipeline {
     agent any
     stages {
+        stage ('Set Vars') {
+            steps {
+                script {
+                    scmVars = setVars()
+                }
+            }
+        }
         stage ('DotNet Restore') {
             steps {
                 sh "dotnet restore"
@@ -61,6 +73,18 @@ pipeline {
             steps {
                 sh "docker -H docker:2375 rm -f endgame-poc"
                 sh "docker -H docker:2375 run -d -p 8080:8080 --name endgame-poc registry.internallab.co.uk/mvs/endgame-poc:${env.BUILD_NUMBER}"
+            }
+        }
+        
+        stage ('Keyword Actions') {
+            steps{
+                script{
+                    println scmVars.ISSUE_ID
+                    if(scmVars.ACTION == 'PR'){
+                        transitionIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,"In Progress")
+                        updateIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,'{"description":"${scmVars.COMMIT_MSG}"}')
+                    }
+                }
             }
         }
         
