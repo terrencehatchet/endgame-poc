@@ -11,11 +11,11 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Packaging.Targets" Version="0.1.56" />
-    <DotNetCliToolReference Include="dotnet-tarball" Version="0.1.56" />
-    <DotNetCliToolReference Include="dotnet-zip" Version="0.1.56*" />
-    <DotNetCliToolReference Include="dotnet-rpm" Version="0.1.56*" />
-    <DotNetCliToolReference Include="dotnet-deb" Version="0.1.56" />
+    <PackageReference Include="Packaging.Targets" Version="0.1.70" />
+    <DotNetCliToolReference Include="dotnet-tarball" Version="0.1.70" />
+    <DotNetCliToolReference Include="dotnet-zip" Version="0.1.70*" />
+    <DotNetCliToolReference Include="dotnet-rpm" Version="0.1.70*" />
+    <DotNetCliToolReference Include="dotnet-deb" Version="0.1.70" />
   </ItemGroup>
   
 </Project>
