@@ -9,6 +9,7 @@ pipeline {
         stage ('Set Vars') {
             steps {
                 script {
+                    sh "env"
                     scmVars = setVars()
                     testFail = false
                 }
@@ -92,6 +93,9 @@ pipeline {
         }
         
         stage ('Keyword Actions') {
+            when {
+                expression { !env.CHANGE_URL }
+            }
             steps{
                 script{
                     println scmVars.ISSUE_ID
@@ -103,6 +107,7 @@ pipeline {
                     if(scmVars.ACTION == 'PR-TEST' && testFail){
                         transitionIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,"Tests Peer Review")
                         updateIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
+                        createGitHubPR("https://api.github.com","test","endgame-poc","terrencehatchet","master","rhys-test",scmVars.ISSUE_ID,"TEST PR for "+scmVars.ISSUE_ID)
                     }
                     if(testFail){
                         echo "tests failed"
