@@ -77,7 +77,6 @@ pipeline {
         stage ('DotNet Publish') {
             steps {
                 sh "dotnet publish -c Release"
-                sh "dotnet deb -c Release -r ubuntu.16.10-x64"
             }
         }
         
@@ -133,6 +132,8 @@ pipeline {
             }
             steps {
                 script{
+                    buildDotNetDeb(scmVars.PROJ_NAME,"0.1",nexusURL,"ubuntu.16.04-x64","netcoreapp2.2")
+                    buildDotNetRPM(scmVars.PROJ_NAME,"0.1",nexusURL,"ubuntu.16.04-x64","netcoreapp2.2")
                     publishTarball(scmVars.PROJ_NAME,"0.1",nexusURL)
                 }
             }
