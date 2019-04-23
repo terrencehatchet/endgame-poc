@@ -8,6 +8,8 @@ jiraURL = "https://jira.mvs.easlab.co.uk"
 dockerRegistry = "registry.internallab.co.uk"
 nexusURL = "https://nexus.mvs.easlab.co.uk/repository/dotnet-packages/"
 gitHubURL = "https://api.github.com"
+
+
 pipeline {
     agent any
     stages {
@@ -73,28 +75,29 @@ pipeline {
         
         stage ('DotNet Publish') {
             steps {
-                sh "dotnet publish -c Release"           
+                sh "dotnet publish -c Release"
+                sh "dotnet deb -c Release -r ubuntu.16.10-x64"
             }
         }
         
         stage ('Docker Build') {
             steps {
                 
-                sh "docker -H docker:2375 build -t ${dockerRegistry}/mvs/${setVars.PROJ_NAME}:${env.BUILD_NUMBER} ."
+                sh "docker -H docker:2375 build -t ${dockerRegistry}/mvs/${scmVars.PROJ_NAME}:${env.BUILD_NUMBER} ."
             }
         }
         
         stage ('Docker Publish') {
             steps {
                 sh "docker -H docker:2375 login -u jenkins -p Renegade187! ${dockerRegistry}"
-                sh "docker -H docker:2375 push ${dockerRegistry}/mvs/${setVars.PROJ_NAME}:${env.BUILD_NUMBER}"
+                sh "docker -H docker:2375 push ${dockerRegistry}/mvs/${scmVars.PROJ_NAME}:${env.BUILD_NUMBER}"
             }
         }
         
         stage ('Docker Deploy') {
             steps {
-                sh "docker -H docker:2375 rm -f ${setVars.PROJ_NAME}"
-                sh "docker -H docker:2375 run -d -p 8080:8080 --name ${setVars.PROJ_NAME} ${dockerRegistry}/mvs/${setVars.PROJ_NAME}:${env.BUILD_NUMBER}"
+                sh "docker -H docker:2375 rm -f ${scmVars.PROJ_NAME}"
+                sh "docker -H docker:2375 run -d -p 8080:8080 --name ${scmVars.PROJ_NAME} ${dockerRegistry}/mvs/${scmVars.PROJ_NAME}:${env.BUILD_NUMBER}"
             }
         }
         
@@ -114,7 +117,7 @@ pipeline {
                         transitionIssue(jiraURL,scmVars.ISSUE_ID,"Tests Peer Review")
                         updateIssue(jiraURL,scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
                         //need to get parent branch in SCMVARS
-                        createGitHubPR(gitHubURL,"test",setVars.PROJ_NAME,"terrencehatchet","master",env.GIT_BRANCH,scmVars.ISSUE_ID,"PR for "+scmVars.ISSUE_ID)
+                        createGitHubPR(gitHubURL,"test",scmVars.PROJ_NAME,"terrencehatchet","master",env.GIT_BRANCH,scmVars.ISSUE_ID,"PR for "+scmVars.ISSUE_ID)
                     }
                     if(testFail){
                         echo "tests failed"
@@ -129,7 +132,7 @@ pipeline {
             }
             steps {
                 script{
-                    publishTarball(setVars.PROJ_NAME,"0.1",nexusURL)
+                    publishTarball(scmVars.PROJ_NAME,"0.1",nexusURL)
                 }
             }
         }
