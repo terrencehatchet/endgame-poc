@@ -17,6 +17,7 @@ pipeline {
             steps {
                 script {
                     deleteDir()
+                    checkout scm
                     scmVars = setVars()
                     testFail = false
                 }
