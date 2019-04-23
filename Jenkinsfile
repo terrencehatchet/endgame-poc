@@ -121,14 +121,14 @@ pipeline {
                         if(scmVars.ACTION == 'PR'){
                             transitionIssue(jiraURL,scmVars.ISSUE_ID,"Peer Review")
                             updateIssue(jiraURL,scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
-                            createGitHubPR(gitHubURL,"development",scmVars.PROJ_NAME,"terrencehatchet","master",env.GIT_BRANCH,scmVars.ISSUE_ID,"Development PR for "+scmVars.ISSUE_ID)
+                            createGitHubPR(gitHubURL,"development",scmVars.PROJ_NAME,"terrencehatchet","RELEASE-19.05",env.GIT_BRANCH,scmVars.ISSUE_ID,"Development PR for "+scmVars.ISSUE_ID)
                         }
 
                         if(scmVars.ACTION == 'PR-TEST' && testFail){
                             transitionIssue(jiraURL,scmVars.ISSUE_ID,"Tests Peer Review")
                             updateIssue(jiraURL,scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
                             //need to get parent branch in SCMVARS
-                            createGitHubPR(gitHubURL,"test",scmVars.PROJ_NAME,"terrencehatchet","master",env.GIT_BRANCH,scmVars.ISSUE_ID,"TEST PR for "+scmVars.ISSUE_ID)
+                            createGitHubPR(gitHubURL,"test",scmVars.PROJ_NAME,"terrencehatchet","RELEASE-19.05",env.GIT_BRANCH,scmVars.ISSUE_ID,"TEST PR for "+scmVars.ISSUE_ID)
                         }
                         if(scmVars.ACTION == 'PR-TEST' && !testFail){
                             currentBuild.result = 'FAILURE'
@@ -149,6 +149,11 @@ pipeline {
                     buildDotNetDeb(scmVars.PROJ_NAME,"0.1",nexusURL,"ubuntu.16.04-x64","netcoreapp2.2")
                     buildDotNetRPM(scmVars.PROJ_NAME,"0.1",nexusURL,"ubuntu.16.04-x64","netcoreapp2.2")
                     publishTarball(scmVars.PROJ_NAME,"0.1",nexusURL)
+                    def mergedIssues = getAllMergedIssues(setVars.COMMIT_HASH)
+                    def mergedIssueSize = mergedIssues.size()
+                    mergedIssueSize.times {
+                        transitionIssue(jiraURL,mergedIssues[it],"Done")
+                    }
                 }
             }
         }
