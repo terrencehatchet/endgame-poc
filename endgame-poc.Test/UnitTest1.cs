@@ -11,7 +11,7 @@ namespace endgame_poc.Test
         {
             int result = endgame_poc.complexCalc.calculate(1, 2);
             
-            Assert.True(result == 4); 
+            Assert.True(result == 3); 
      
         }
     }
