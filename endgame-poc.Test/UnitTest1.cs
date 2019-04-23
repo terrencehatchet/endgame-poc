@@ -17,7 +17,7 @@ namespace endgame_poc.Test
             }
             else
             {
-                Assert.False(false);
+                Assert.False(true);
             }
         }
     }
