@@ -16,7 +16,7 @@ pipeline {
         stage ('Set Vars') {
             steps {
                 script {
-                    sh "env"
+                    deleteDir()
                     scmVars = setVars()
                     testFail = false
                 }
