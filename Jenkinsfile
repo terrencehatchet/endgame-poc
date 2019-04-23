@@ -107,23 +107,6 @@ pipeline {
             }
             steps{
                 script{
-                    if(scmVars.ACTION == 'PR'){
-                        transitionIssue(jiraURL,scmVars.ISSUE_ID,"Peer Review")
-                        updateIssue(jiraURL,scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
-                        createGitHubPR(gitHubURL,"development",scmVars.PROJ_NAME,"terrencehatchet","master",env.GIT_BRANCH,scmVars.ISSUE_ID,"Development PR for "+scmVars.ISSUE_ID)
-                    }
-                    
-                    if(scmVars.ACTION == 'PR-TEST' && testFail){
-                        transitionIssue(jiraURL,scmVars.ISSUE_ID,"Tests Peer Review")
-                        updateIssue(jiraURL,scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
-                        //need to get parent branch in SCMVARS
-                        createGitHubPR(gitHubURL,"test",scmVars.PROJ_NAME,"terrencehatchet","master",env.GIT_BRANCH,scmVars.ISSUE_ID,"TEST PR for "+scmVars.ISSUE_ID)
-                    }
-                    if(scmVars.ACTION == 'PR-TEST' && !testFail){
-                        currentBuild.result = 'FAILURE'
-                        echo "tests should fail during this run but didn't"
-                        sh "exit 1"
-                    }
                     if(env.GIT_BRANCH.contains('RELEASE')){
                         if(scmVars.ACTION == 'PR'){
                             transitionIssue(jiraURL,scmVars.ISSUE_ID,"Merged to Parent")
@@ -133,6 +116,24 @@ pipeline {
                         if(scmVars.ACTION == 'PR-TEST' && testFail){
                             transitionIssue(jiraURL,scmVars.ISSUE_ID,"Tests Defined")
                             updateIssue(jiraURL,scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
+                        }
+                    } else {
+                        if(scmVars.ACTION == 'PR'){
+                            transitionIssue(jiraURL,scmVars.ISSUE_ID,"Peer Review")
+                            updateIssue(jiraURL,scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
+                            createGitHubPR(gitHubURL,"development",scmVars.PROJ_NAME,"terrencehatchet","master",env.GIT_BRANCH,scmVars.ISSUE_ID,"Development PR for "+scmVars.ISSUE_ID)
+                        }
+
+                        if(scmVars.ACTION == 'PR-TEST' && testFail){
+                            transitionIssue(jiraURL,scmVars.ISSUE_ID,"Tests Peer Review")
+                            updateIssue(jiraURL,scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
+                            //need to get parent branch in SCMVARS
+                            createGitHubPR(gitHubURL,"test",scmVars.PROJ_NAME,"terrencehatchet","master",env.GIT_BRANCH,scmVars.ISSUE_ID,"TEST PR for "+scmVars.ISSUE_ID)
+                        }
+                        if(scmVars.ACTION == 'PR-TEST' && !testFail){
+                            currentBuild.result = 'FAILURE'
+                            echo "tests should fail during this run but didn't"
+                            sh "exit 1"
                         }
                     }
                 }
