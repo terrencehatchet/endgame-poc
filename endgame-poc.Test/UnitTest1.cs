@@ -10,9 +10,15 @@ namespace endgame_poc.Test
         public void Test1()
         {
             int result = endgame_poc.complexCalc.calculate(1, 2);
-            
-            Assert.True(true); 
-     
+
+            if (result == 4)
+            {
+                Assert.True(true);
+            }
+            else
+            {
+                Assert.False(true);
+            }
         }
     }
 }
