@@ -9,6 +9,7 @@ pipeline {
         stage ('Set Vars') {
             steps {
                 script {
+                    sh "env"
                     scmVars = setVars()
                     testFail = false
                 }
@@ -92,6 +93,9 @@ pipeline {
         }
         
         stage ('Keyword Actions') {
+            when {
+                expression { !env.CHANGE_URL }
+            }
             steps{
                 script{
                     println scmVars.ISSUE_ID
