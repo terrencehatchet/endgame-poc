@@ -11,7 +11,7 @@ namespace endgame_poc.Test
         {
             int result = endgame_poc.complexCalc.calculate(1, 2);
 
-            if (result == 3)
+            if (result == 9)
             {
                 Assert.True(true);
             }
