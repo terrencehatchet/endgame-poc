@@ -10,6 +10,7 @@ pipeline {
             steps {
                 script {
                     scmVars = setVars()
+                    testFail = false
                 }
             }
         }
@@ -46,8 +47,22 @@ pipeline {
         
         stage ('DotNet XUnit Tests') {
             steps {
-                sh "dotnet test"
+                script{
+                    try {
+                        sh "dotnet test"
+                    } catch(e){
+                        if(scmVars.ACTION == "PR-TEST"){
+                            currentBuild.result = 'SUCCESS'
+                            testFail = true
+                            sh "exit 0"
+                        } else {
+                            sh "exit 1"
+                        }
+                    }
+                    
+                }
             }
+        
         }
         
         stage ('DotNet Publish') {
@@ -81,8 +96,16 @@ pipeline {
                 script{
                     println scmVars.ISSUE_ID
                     if(scmVars.ACTION == 'PR'){
-                        transitionIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,"In Progress")
-                        updateIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,'{"description":"${scmVars.COMMIT_MSG}"}')
+                        transitionIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,"Peer Review")
+                        updateIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
+                    }
+                    
+                    if(scmVars.ACTION == 'PR-TEST' && testFail){
+                        transitionIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,"Tests Peer Review")
+                        updateIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
+                    }
+                    if(testFail){
+                        echo "tests failed"
                     }
                 }
             }
