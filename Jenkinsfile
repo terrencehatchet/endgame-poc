@@ -3,6 +3,11 @@
 @Library('jira-shared-library@master') _
 library('common-shared@master')
 
+//Endpoints
+jiraURL = "https://jira.mvs.easlab.co.uk"
+dockerRegistry = "registry.internallab.co.uk"
+nexusURL = "https://nexus.mvs.easlab.co.uk/repository/dotnet-packages/"
+gitHubURL = "https://api.github.com"
 pipeline {
     agent any
     stages {
@@ -74,21 +79,22 @@ pipeline {
         
         stage ('Docker Build') {
             steps {
-                sh "docker -H docker:2375 build -t registry.internallab.co.uk/mvs/endgame-poc:${env.BUILD_NUMBER} ."
+                
+                sh "docker -H docker:2375 build -t ${dockerRegistry}/mvs/${setVars.PROJ_NAME}:${env.BUILD_NUMBER} ."
             }
         }
         
         stage ('Docker Publish') {
             steps {
-                sh "docker -H docker:2375 login -u jenkins -p Renegade187! registry.internallab.co.uk"
-                sh "docker -H docker:2375 push registry.internallab.co.uk/mvs/endgame-poc:${env.BUILD_NUMBER}"
+                sh "docker -H docker:2375 login -u jenkins -p Renegade187! ${dockerRegistry}"
+                sh "docker -H docker:2375 push ${dockerRegistry}/mvs/${setVars.PROJ_NAME}:${env.BUILD_NUMBER}"
             }
         }
         
         stage ('Docker Deploy') {
             steps {
-                sh "docker -H docker:2375 rm -f endgame-poc"
-                sh "docker -H docker:2375 run -d -p 8080:8080 --name endgame-poc registry.internallab.co.uk/mvs/endgame-poc:${env.BUILD_NUMBER}"
+                sh "docker -H docker:2375 rm -f ${setVars.PROJ_NAME}"
+                sh "docker -H docker:2375 run -d -p 8080:8080 --name ${setVars.PROJ_NAME} ${dockerRegistry}/mvs/${setVars.PROJ_NAME}:${env.BUILD_NUMBER}"
             }
         }
         
@@ -100,18 +106,30 @@ pipeline {
                 script{
                     println scmVars.ISSUE_ID
                     if(scmVars.ACTION == 'PR'){
-                        transitionIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,"Peer Review")
-                        updateIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
+                        transitionIssue(jiraURL,scmVars.ISSUE_ID,"Peer Review")
+                        updateIssue(jiraURL,scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
                     }
                     
                     if(scmVars.ACTION == 'PR-TEST' && testFail){
-                        transitionIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,"Tests Peer Review")
-                        updateIssue("https://jira.mvs.easlab.co.uk",scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
-                        createGitHubPR("https://api.github.com","test","endgame-poc","terrencehatchet","master","rhys-test",scmVars.ISSUE_ID,"TEST PR for "+scmVars.ISSUE_ID)
+                        transitionIssue(jiraURL,scmVars.ISSUE_ID,"Tests Peer Review")
+                        updateIssue(jiraURL,scmVars.ISSUE_ID,'{"description":"' + scmVars.COMMIT_MSG + '"}')
+                        //need to get parent branch in SCMVARS
+                        createGitHubPR(gitHubURL,"test",setVars.PROJ_NAME,"terrencehatchet","master",env.GIT_BRANCH,scmVars.ISSUE_ID,"PR for "+scmVars.ISSUE_ID)
                     }
                     if(testFail){
                         echo "tests failed"
                     }
+                }
+            }
+        }
+        
+        stage ('Publish Artefact') {
+            when {
+                branch "master"
+            }
+            steps {
+                script{
+                    publishTarball(setVars.PROJ_NAME,"0.1",nexusURL)
                 }
             }
         }
