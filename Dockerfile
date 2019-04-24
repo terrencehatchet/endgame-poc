@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/core/runtime:2.2
 
-COPY ./endgame-poc/bin/Release/netcoreapp2.2/publish /app
+COPY ./endgame-poc/bin/Release/netcoreapp2.2/publish /endgame-poc
 
-ENTRYPOINT ["dotnet", "app/endgame-poc.dll"]
+ENTRYPOINT ["dotnet", "endgame-poc/endgame-poc.dll"]
