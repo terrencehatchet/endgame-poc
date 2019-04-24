@@ -149,7 +149,7 @@ pipeline {
                     buildDotNetDeb(scmVars.PROJ_NAME,"0.1",nexusURL,"ubuntu.16.04-x64","netcoreapp2.2")
                     buildDotNetRPM(scmVars.PROJ_NAME,"0.1",nexusURL,"ubuntu.16.04-x64","netcoreapp2.2")
                     publishTarball(scmVars.PROJ_NAME,"0.1",nexusURL)
-                    def mergedIssues = getAllMergedIssues(setVars.COMMIT_HASH)
+                    def mergedIssues = getAllMergedIssues(scmVars.COMMIT_HASH)
                     def mergedIssueSize = mergedIssues.size()
                     mergedIssueSize.times {
                         transitionIssue(jiraURL,mergedIssues[it],"Done")
