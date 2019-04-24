@@ -18,5 +18,11 @@
     <DotNetCliToolReference Include="dotnet-zip" Version="0.1.56" />
     <DotNetCliToolReference Include="dotnet-rpm" Version="0.1.56" />
     <DotNetCliToolReference Include="dotnet-deb" Version="0.1.56" />
+    <None Update="__admin\mappings\getStatus.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="__admin\mappings\happy.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
