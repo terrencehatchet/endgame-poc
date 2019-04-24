@@ -101,6 +101,12 @@ pipeline {
             }
         }
         
+        stage ('Functional Test') {
+            steps {
+                sh "curl curl https://endgame-poc.mvs.easlab.co.uk/api/v1/Applications/10%2F50309612-09/Mortgage/status?intermediaryId=TJLP39928"
+            }
+        }
+        
         stage ('Keyword Actions') {
             when {
                 expression { !env.CHANGE_URL }
