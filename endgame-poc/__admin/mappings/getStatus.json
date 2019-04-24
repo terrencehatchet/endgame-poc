@@ -1,0 +1,11 @@
+{
+    "Request": {
+      "Methods": [ "get" ],
+      "url": "*/api/v1/Applications/*/Mortgage/status*"
+    },
+    "Response": {
+      "StatusCode": 200,
+      "Headers": { "Content-Type": "text/xml" },
+      "BodyAsFile": "./endgame-poc/__admin/mappings/happy.xml"
+    }
+  }

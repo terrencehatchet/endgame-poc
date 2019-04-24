@@ -4,6 +4,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
+using System.IO;
 
 namespace endgame_poc
 {
@@ -13,19 +14,26 @@ namespace endgame_poc
         {
             var server = FluentMockServer.Start(new FluentMockServerSettings
             {
-                Urls = new[] {"http://+:8080"}
+                Urls = new[] {"http://+:8080"},
+                StartAdminInterface = true,
+                ReadStaticMappings = true,
             });
 
-            server
+            // Set the maping folder relative to this one
+            string mappingsFolder = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "endgame-poc", "__admin", "mappings");
+            System.Console.WriteLine("mappingsFolder folder: " + mappingsFolder);
+            server.ReadStaticMappings(mappingsFolder);
+
+            /* server
                 .Given(
-                    Request.Create().WithPath("/some/thing").UsingGet()
+                    Request.Create().WithPath("* /api/v1/Applications/* /Mortgage/status").UsingGet()
                 )
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode(200)
                         .WithHeader("Content-Type", "text/plain")
                         .WithBody("Hello world!!!!!")
-                );
+                );*/
 
             Thread.Sleep(Timeout.Infinite);
 

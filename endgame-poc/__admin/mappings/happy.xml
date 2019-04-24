@@ -1,0 +1,36 @@
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+   <s:Body>
+      <tns:GetApplicationListResponse xmlns:Intermediary="urn:BankEndgame.Mortgages.Schema.Intermediary" xmlns:ResultCondition="urn:BankEndgame.Mortgages.Schema.ResultCondition.V1" xmlns:Header="urn:HBOS.Sales.RetailBanking.Mortgages.Schema.Header" xmlns:Generic="urn:HBOS.Sales.RetailBanking.Mortgages.Schema.Generic" xmlns:Enumeration="urn:HBOS.Sales.RetailBanking.Mortgages.Schema.Enumeration" xmlns:Customers="urn:HBOS.Sales.RetailBanking.Mortgages.Schema.Customers.GetApplicationListRequest" xmlns:tns="urn:HBOS.Sales.RetailBanking.Mortgages.Contract.CoreBusiness.Applications.v3">
+         <tns:ResultCondition>
+            <ResultCondition:SeverityCode>0</ResultCondition:SeverityCode>
+         </tns:ResultCondition>
+         <tns:ApplicationData>
+            <tns:ApplicationCount>1</tns:ApplicationCount>
+            <tns:Application>
+               <tns:AgreementNumber>1234567890</tns:AgreementNumber>
+               <tns:ApplicationType>7</tns:ApplicationType>
+               <tns:TransactionType>ABC</tns:TransactionType>
+               <tns:RollNumber>12/12345678-01</tns:RollNumber>
+               <tns:KFISubStatus>123</tns:KFISubStatus>
+               <tns:DIPSubStatus>456</tns:DIPSubStatus>
+               <tns:FMASubStatus>789</tns:FMASubStatus>
+               <tns:PostAppSubStatus>123</tns:PostAppSubStatus>
+               <tns:BrandType>0000</tns:BrandType>
+               <tns:ApplicationStatus>1</tns:ApplicationStatus>
+               <tns:Customers>
+                  <Customers:Customer>
+                     <Customers:Surname>Marvel</Customers:Surname>
+                  </Customers:Customer>
+                  <Customers:Customer>
+                     <Customers:Surname>Stark</Customers:Surname>
+                  </Customers:Customer>
+               </tns:Customers>
+               <tns:MMRApplication>Y</tns:MMRApplication>
+               <tns:DateCreated>01/01/2018</tns:DateCreated>
+               <tns:DateAmended>02/01/2018 09:35</tns:DateAmended>
+               <tns:LevelOfAdvice>3</tns:LevelOfAdvice>
+            </tns:Application>
+         </tns:ApplicationData>
+      </tns:GetApplicationListResponse>
+   </s:Body>
+</s:Envelope>
